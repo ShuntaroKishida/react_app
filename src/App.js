@@ -1,71 +1,95 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import "./App.css";
 
-let theme = {
-  light: {
-    styles: {
-      backgroundColor: "#f0f9ff",
-      color: "#00f",
-    },
-    head: "bg-primary text-white display-4 mb-4",
-    alert: "alert alert-primary my-3",
-    text: "text-primary m-3",
-    foot: "py-4",
-  },
-  dark: {
-    styles: {
-      backgroundColor: "#336",
-      color: "#eef",
-    },
-    head: "bg-secondary text-white display-4 mb-4",
-    alert: "alert alert-dark my-3",
-    text: "text-light m-3",
-    foot: "py-4",
-  },
-};
+function AlertMessage(props) {
+  const data = props.data;
+  const msg = JSON.stringify(data);
 
-const ThemeContext = React.createContext(theme.dark); //☆
-
-class App extends Component {
-  static contextType = ThemeContext;
-
-  render() {
-    return (
-      <div style={this.context.styles}>
-        <h1 className={this.context.head}>React</h1>
-        <div className="container">
-          <Title value="Content page" />
-          <Message value="This is Content sample." />
-          <Message value="※これはテーマのサンプルです。" />
-          <div className={this.context.foot}></div>
-        </div>
-      </div>
-    );
-  }
+  return (
+    <div className="alert alert-primary h5 text-primary">
+      <h5>{msg}</h5>
+      <hr />
+      <table className="table h6">
+        <tbody>
+          <tr>
+            <th>Name</th>
+            <td>{data.name}</td>
+          </tr>
+          <tr>
+            <th>Mail</th>
+            <td>{data.mail}</td>
+          </tr>
+          <tr>
+            <th>Age</th>
+            <td>{data.age}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
 }
 
-class Title extends Component {
-  static contextType = ThemeContext;
+function App() {
+  const [name, setName] = useState("");
+  const [mail, setMail] = useState("");
+  const [age, setAge] = useState(0);
+  const [form, setForm] = useState({
+    name: "no name",
+    mail: "no mail",
+    age: 0,
+  });
 
-  render() {
-    return (
-      <div className={this.context.alert}>
-        <h2 style={this.context.style}>{this.props.value}</h2>
+  const doChangeName = (event) => {
+    setName(event.target.value);
+  };
+  const doChangeMail = (event) => {
+    setMail(event.target.value);
+  };
+  const doChangeAge = (event) => {
+    setAge(event.target.value);
+  };
+
+  const doSubmit = (event) => {
+    setForm({ name: name, mail: mail, age: age });
+    event.preventDefault();
+  };
+
+  return (
+    <div>
+      <h1 className="bg-primary text-white display-4 ">React</h1>
+      <div className="container">
+        <h4 className="my-3">Hooks sample</h4>
+        <AlertMessage data={form} setData={setForm} />
+        <form onSubmit={doSubmit}>
+          <div className="form-group">
+            <label>Name:</label>
+            <input
+              type="text"
+              className="form-control"
+              onChange={doChangeName}
+            />
+          </div>
+          <div className="form-group">
+            <label>Mail:</label>
+            <input
+              type="text"
+              className="form-control"
+              onChange={doChangeMail}
+            />
+          </div>
+          <div className="form-group">
+            <label>Age:</label>
+            <input
+              type="number"
+              className="form-control"
+              onChange={doChangeAge}
+            />
+          </div>
+          <input type="submit" className="btn btn-primary" value="Click" />
+        </form>
       </div>
-    );
-  }
-}
-
-class Message extends Component {
-  static contextType = ThemeContext;
-
-  render() {
-    return (
-      <div style={this.context.style}>
-        <p className={this.context.text}>{this.props.value}</p>
-      </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default App;
